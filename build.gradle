@@ -204,7 +204,7 @@ dependencies
     compile ('net.clearcontrol:nirioj:1.1.0')                         {transitive=true; changing= true}
 
     // GS driver
-    compile ('net.clearcontrol:GS16AO64c:0.0.1')
+    compile ('net.clearcontrol:GS16AO64c:0.0.4')
 
     // Other:
     //compile 'com.github.rwl:jtransforms:2.4.0'

@@ -1,6 +1,6 @@
 package clearcontrol.devices.signalgen.devices.gs.compiler;
 
-import GS.GSBuffer;
+import gsao64.GSBuffer;
 
 import java.util.ArrayDeque;
 

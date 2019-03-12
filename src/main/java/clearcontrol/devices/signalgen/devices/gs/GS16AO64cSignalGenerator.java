@@ -10,8 +10,8 @@ import clearcontrol.devices.signalgen.devices.gs.compiler.GS16AO64cCompiledScore
 import clearcontrol.devices.signalgen.devices.gs.compiler.GS16AO64cScoreCompiler;
 import clearcontrol.devices.signalgen.score.ScoreInterface;
 
-import GS.GSSequencer;
-import GSConstants.GSConstants;
+import gsao64.GSSequencer;
+import gsao64.GSConstants;
 
 /**
  *
