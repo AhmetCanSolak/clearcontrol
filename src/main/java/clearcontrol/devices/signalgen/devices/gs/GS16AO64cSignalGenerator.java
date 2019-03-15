@@ -22,7 +22,7 @@ public class GS16AO64cSignalGenerator extends SignalGeneratorBase
                                       implements  SignalGeneratorInterface
 {
     private final GSConstants constants = new GSConstants();
-    private final GS16AO64cCompiledScore mGS16AO64cCompiledScore = new GS16AO64cCompiledScore();
+    private final GS16AO64cCompiledScore mGS16AO64cCompiledScore = new GS16AO64cCompiledScore(100000);
 
     private GSSequencer sequencer;
     double mWaitTimeInMilliseconds = 0;

@@ -9,12 +9,15 @@ public class GS16AO64cCompiledScore
     private volatile long mNumberOfMeasures;
     private ArrayDeque<GSBuffer> mArrayData;
 
+    public int mSamplingRate;
 
-    public GS16AO64cCompiledScore()
+
+    public GS16AO64cCompiledScore(int pSamplingRate)
     {
         if (mArrayData == null)
         {
             mArrayData = new ArrayDeque<GSBuffer>();
+            mSamplingRate = pSamplingRate;
             addNewBufferToArrayData();
         }
     }
@@ -39,23 +42,27 @@ public class GS16AO64cCompiledScore
     public void addNewBufferToArrayData()
     {
         try {
-            GSBuffer newBuffer = new GSBuffer(2048, 64);
+            GSBuffer newBuffer = new GSBuffer(2999);
             mArrayData.addLast(newBuffer);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public void addValueToArrayData(double pValue, int pChannelIndex)
+    public boolean addValueToArrayData(double pValue, int pChannelIndex)
     {
+        System.out.println(mArrayData.peekLast().getNumTPWritten());
+        if (mArrayData.peekLast().getNumTPWritten() == 2999) {
+            this.addNewBufferToArrayData();
+        }
+
+        boolean newValueAdded = false;
         try {
-            mArrayData.peekLast().appendValue(pValue,pChannelIndex);
+            newValueAdded = mArrayData.peekLast().appendValue(pValue,pChannelIndex);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        if (mArrayData.peekLast().getNumTP() == 2048) {
-            this.addNewBufferToArrayData();
-        }
+        return newValueAdded;
     }
 
 }

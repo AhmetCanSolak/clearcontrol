@@ -13,8 +13,7 @@ import com.sun.jna.NativeLong;
 import gsao64.GSBuffer;
 import gsao64.GSConstants;
 import gsao64.GSSplitterBuffer;
-import gsao64.exceptions.BoardInitializeException;
-import gsao64.exceptions.BufferTooLargeException;
+import gsao64.exceptions.*;
 import org.junit.Test;
 
 import java.util.ArrayDeque;
@@ -37,7 +36,7 @@ public class GS16AO64cScoreCompilerTests
         Score lScore = defineSampleScore();
 
         // Compiling score
-        final GS16AO64cCompiledScore lGS16AO64cCompiledScore = new GS16AO64cCompiledScore();
+        final GS16AO64cCompiledScore lGS16AO64cCompiledScore = new GS16AO64cCompiledScore(100000);
         GS16AO64cScoreCompiler.compile(lGS16AO64cCompiledScore, lScore);
 
 //        assertEquals(4 * lNumberOfMovements, lGS16AO64cCompiledScore.getDeltaTimeBuffer().getSizeInBytes());
@@ -52,23 +51,22 @@ public class GS16AO64cScoreCompilerTests
         Score lScore = defineSampleScore();
 
         // Compile it
-        final GS16AO64cCompiledScore lGS16AO64cCompiledScore = new GS16AO64cCompiledScore();
+        final GS16AO64cCompiledScore lGS16AO64cCompiledScore = new GS16AO64cCompiledScore(4096*2);
         GS16AO64cScoreCompiler.compile(lGS16AO64cCompiledScore, lScore);
 
         // Prepare expected arrayData
         GSSplitterBuffer data = null;
         try {
-            data = new GSSplitterBuffer(4096 * 20, 16);
+            data = new GSSplitterBuffer(2999 * 10);
         } catch (BufferTooLargeException e) {
             e.printStackTrace();
         } catch (BoardInitializeException e) {
             e.printStackTrace();
         }
 
-
-        for (int loop = 0; loop < 4096 * 20; loop++) {
+        for (int loop = 0; loop < 2999 * 10; loop++) {
             for (int i = 0; i < 16; i++) {
-                float value = (float) Math.sin(Math.PI * 2 * ((float)loop/(4096*2)));
+                float value = (float) Math.sin(Math.PI * 2 * ((float)loop/(2999)));
                 data.appendValue(value, i);
             }
             data.appendEndofTP();
@@ -76,8 +74,16 @@ public class GS16AO64cScoreCompilerTests
         data.appendEndofFunction();
         ArrayDeque<GSBuffer> expectedArrayData = data.getData();
 
+
         // assert equality of compiled and expected data buffers
-        assertEquals(lGS16AO64cCompiledScore.getArrayData(),expectedArrayData);
+        assertEquals(lGS16AO64cCompiledScore.getArrayData().size(), expectedArrayData.size());
+
+        for (int i = 0; i < 2999; i++)
+        {
+            System.out.println("iteration number: " + i);
+            assertEquals(lGS16AO64cCompiledScore.getArrayData().getFirst().getTPValues(i),expectedArrayData.getFirst().getTPValues(i));
+        }
+
     }
 
     @Test
@@ -133,7 +139,9 @@ public class GS16AO64cScoreCompilerTests
                 0.0f,
                 1.0f);
 
-        lMeasure.setStave(0, lSinusStave);
+        for (int i = 0; i < 16; i++)
+            lMeasure.setStave(i, lSinusStave);
+
         lMeasure.setDuration(1, TimeUnit.SECONDS);
 
         lScore.addMeasureMultipleTimes(lMeasure, 10);
