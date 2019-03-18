@@ -43,24 +43,10 @@ public class GS16AO64cSignalGeneratorDemo
                 "sinus1",
                 1f,
                 0f,
-                0.5f);
-        final SinusStave lSinusStave2 = new SinusStave(
-                "sinus2",
-                0.25f,
-                0f,
-                0.25f);
-        final SinusStave lSinusStave3 = new SinusStave(
-                "sinus3",
-                0.125f,
-                0f,
                 1f);
 
-        for (int i = 0; i < 1; i++)
-    	    lMeasure.setStave(i, lSinusStave1);
-        for (int i = 1; i < 2; i++)
-            lMeasure.setStave(i, lSinusStave2);
         for (int i = 1; i < 8; i++)
-            lMeasure.setStave(i, lSinusStave3);
+            lMeasure.setStave(i, lSinusStave1);
 
         lScore.addMeasureMultipleTimes(lMeasure, 10);
         lMeasure.setDuration(1, TimeUnit.MILLISECONDS);

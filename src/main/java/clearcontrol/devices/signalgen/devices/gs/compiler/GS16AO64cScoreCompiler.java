@@ -26,10 +26,8 @@ public class GS16AO64cScoreCompiler implements AsynchronousExecutorFeature
                                         MeasureInterface lMeasure)
     {
         // compute required sample number for measure
-        // long t = lMeasure.getDuration(TimeUnit.SECONDS);
-        // long lTimePointsNeeded = t * pGS16AO64cCompiledScore.mSamplingRate;
-        long lTimePointsNeeded = 2999;
-
+        long lMeasureDuration = lMeasure.getDuration(TimeUnit.SECONDS);
+        long lTimePointsNeeded = Math.min(lMeasureDuration * pGS16AO64cCompiledScore.mSamplingRate, 2999);
 
         try
         {
@@ -37,8 +35,7 @@ public class GS16AO64cScoreCompiler implements AsynchronousExecutorFeature
             {
                 for (int i = 0; i < lMeasure.getNumberOfStaves(); i++) {
                     StaveInterface lStave = lMeasure.getStave(i);
-                    System.out.println(lStave.getValue(i) + ": " + i);
-                    pGS16AO64cCompiledScore.addValueToArrayData((float)lStave.getValue((float)iter/lTimePointsNeeded),i);
+                    pGS16AO64cCompiledScore.addValueToArrayData(lStave.getValue((float)iter/lTimePointsNeeded),i);
                 }
                 pGS16AO64cCompiledScore.getArrayData().peekLast().appendEndofTP();
             }
