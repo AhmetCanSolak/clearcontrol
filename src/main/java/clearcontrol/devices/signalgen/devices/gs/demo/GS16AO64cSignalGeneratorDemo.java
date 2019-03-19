@@ -45,11 +45,11 @@ public class GS16AO64cSignalGeneratorDemo
                 0f,
                 1f);
 
-        for (int i = 1; i < 8; i++)
+        for (int i = 0; i < 8; i++)
             lMeasure.setStave(i, lSinusStave1);
 
+        lMeasure.setDuration(1, TimeUnit.SECONDS);
         lScore.addMeasureMultipleTimes(lMeasure, 10);
-        lMeasure.setDuration(1, TimeUnit.MILLISECONDS);
 
         return lScore;
     }

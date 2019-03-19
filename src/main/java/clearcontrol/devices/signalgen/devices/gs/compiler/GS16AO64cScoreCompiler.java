@@ -27,7 +27,8 @@ public class GS16AO64cScoreCompiler implements AsynchronousExecutorFeature
     {
         // compute required sample number for measure
         long lMeasureDuration = lMeasure.getDuration(TimeUnit.SECONDS);
-        long lTimePointsNeeded = Math.min(lMeasureDuration * pGS16AO64cCompiledScore.mSamplingRate, 2999);
+//        long lTimePointsNeeded = Math.min(lMeasureDuration * pGS16AO64cCompiledScore.mSamplingRate, 2999);
+        long lTimePointsNeeded = 2999;
 
         try
         {

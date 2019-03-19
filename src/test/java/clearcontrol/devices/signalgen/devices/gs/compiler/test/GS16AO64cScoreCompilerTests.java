@@ -33,22 +33,34 @@ public class GS16AO64cScoreCompilerTests
     public void testCompilation() throws InterruptedException
     {
         // Get the sample score
-        Score lScore = defineSampleScore();
-
+        Score lScore = defineSampleScore(0,8);
         // Compiling score
         final GS16AO64cCompiledScore lGS16AO64cCompiledScore = new GS16AO64cCompiledScore(100000);
         GS16AO64cScoreCompiler.compile(lGS16AO64cCompiledScore, lScore);
 
-//        assertEquals(4 * lNumberOfMovements, lGS16AO64cCompiledScore.getDeltaTimeBuffer().getSizeInBytes());
 
-        final ScoreVisualizerJFrame lVisualize = ScoreVisualizerJFrame.visualizeAndWait("test", lScore);
+        // Get the sample score
+        Score lScore1 = defineSampleScore(16,31);
+        // Compiling score
+        final GS16AO64cCompiledScore lGS16AO64cCompiledScore1 = new GS16AO64cCompiledScore(100000);
+        GS16AO64cScoreCompiler.compile(lGS16AO64cCompiledScore1, lScore);
+
+
+        // Get the sample score
+        Score lScore2 = defineSampleScore(0,63);
+        // Compiling score
+        final GS16AO64cCompiledScore lGS16AO64cCompiledScore2 = new GS16AO64cCompiledScore(100000);
+        GS16AO64cScoreCompiler.compile(lGS16AO64cCompiledScore2, lScore);
+
+//        assertEquals(4 * lNumberOfMovements, lGS16AO64cCompiledScore.getDeltaTimeBuffer().getSizeInBytes());
+//        final ScoreVisualizerJFrame lVisualize = ScoreVisualizerJFrame.visualizeAndWait("test", lScore);
     }
 
     @Test
     public void testOutputVerification() throws InterruptedException
     {
         // Get the sample score
-        Score lScore = defineSampleScore();
+        Score lScore = defineSampleScore(0,15);
 
         // Compile it
         final GS16AO64cCompiledScore lGS16AO64cCompiledScore = new GS16AO64cCompiledScore(4096*2);
@@ -78,7 +90,7 @@ public class GS16AO64cScoreCompilerTests
         // assert equality of compiled and expected data buffers
         assertEquals(lGS16AO64cCompiledScore.getArrayData().size(), expectedArrayData.size());
 
-        for (int i = 0; i < 2999; i++)
+        for (int i = 0; i < 1500; i++)
         {
             System.out.println("iteration number: " + i);
             assertEquals(lGS16AO64cCompiledScore.getArrayData().getFirst().getTPValues(i),expectedArrayData.getFirst().getTPValues(i));
@@ -126,12 +138,13 @@ public class GS16AO64cScoreCompilerTests
     }
 
 
-    private Score defineSampleScore()
+
+    private Score defineSampleScore(int pFirstChannelIndex, int pSecondChannelIndex)
     {
         // Defining score
         final Score lScore = new Score("Test Score");
 
-        final Measure lMeasure = new Measure("Test Movement");
+        final Measure lMeasure = new Measure("Test Movement", pSecondChannelIndex+1);
 
         final SinusStave lSinusStave = new SinusStave(
                 "sinusTest",
@@ -139,7 +152,7 @@ public class GS16AO64cScoreCompilerTests
                 0.0f,
                 1.0f);
 
-        for (int i = 0; i < 16; i++)
+        for (int i = pFirstChannelIndex; i <= pSecondChannelIndex; i++)
             lMeasure.setStave(i, lSinusStave);
 
         lMeasure.setDuration(1, TimeUnit.SECONDS);

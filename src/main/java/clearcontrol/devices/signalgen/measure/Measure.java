@@ -1,6 +1,7 @@
 package clearcontrol.devices.signalgen.measure;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
 import clearcontrol.core.device.name.NameableBase;
@@ -22,7 +23,7 @@ public class Measure extends NameableBase
   public static final int cDefaultNumberOfStavesPerMeasure = 16;
 
   private volatile long mDurationInNanoseconds;
-  private final StaveInterface[] mStaveListArray;
+  private final HashMap<Integer, StaveInterface> mStaveListHashMap;
   private volatile boolean mIsSync = false;
   private volatile boolean mIsSyncOnRisingEdge = false;
   private volatile int mSyncChannel = 0;
@@ -49,10 +50,10 @@ public class Measure extends NameableBase
   public Measure(final String pName, final int pNumberOfStaves)
   {
     super(pName);
-    mStaveListArray = new StaveInterface[pNumberOfStaves];
+    mStaveListHashMap = new HashMap<>(pNumberOfStaves);
     for (int i = 0; i < pNumberOfStaves; i++)
     {
-      mStaveListArray[i] = new ZeroStave();
+      mStaveListHashMap.put(i, new ZeroStave());
     }
   }
 
@@ -72,10 +73,10 @@ public class Measure extends NameableBase
     setDuration(pMeasure.getDuration(TimeUnit.NANOSECONDS),
                 TimeUnit.NANOSECONDS);
 
-    for (int i = 0; i < mStaveListArray.length; i++)
+    for (int i = 0; i < mStaveListHashMap.size(); i++)
     {
       final StaveInterface lStaveInterface =
-                                           pMeasure.mStaveListArray[i];
+                                           pMeasure.mStaveListHashMap.get(i);
       setStave(i, lStaveInterface.duplicate());
     }
   }
@@ -90,7 +91,7 @@ public class Measure extends NameableBase
   public void setStave(final int pStaveIndex,
                        final StaveInterface pNewStave)
   {
-    mStaveListArray[pStaveIndex] = pNewStave;
+    mStaveListHashMap.replace(pStaveIndex, pNewStave);
   }
 
   @SuppressWarnings("unchecked")
@@ -98,9 +99,9 @@ public class Measure extends NameableBase
   public <O extends StaveInterface> O ensureSetStave(int pStaveIndex,
                                                      O pNewStave)
   {
-    if (mStaveListArray[pStaveIndex] != null
-        && !(mStaveListArray[pStaveIndex] instanceof ZeroStave))
-      return (O) mStaveListArray[pStaveIndex];
+    if (mStaveListHashMap.get(pStaveIndex) != null
+        && !(mStaveListHashMap.get(pStaveIndex) instanceof ZeroStave))
+      return (O) mStaveListHashMap.get(pStaveIndex);
     else
     {
       setStave(pStaveIndex, pNewStave);
@@ -111,14 +112,13 @@ public class Measure extends NameableBase
   @Override
   public StaveInterface getStave(final int pStaveIndex)
   {
-    return mStaveListArray[pStaveIndex];
+    return mStaveListHashMap.get(pStaveIndex);
   }
 
   @Override
   public int getNumberOfStaves()
   {
-    final int lNumberOfChannels = mStaveListArray.length;
-    return lNumberOfChannels;
+    return  mStaveListHashMap.size();
   }
 
   @Override
@@ -181,7 +181,7 @@ public class Measure extends NameableBase
                                    ^ (mDurationInNanoseconds >>> 32));
     result = prime * result + (mIsSync ? 1231 : 1237);
     result = prime * result + (mIsSyncOnRisingEdge ? 1231 : 1237);
-    result = prime * result + Arrays.hashCode(mStaveListArray);
+    result = prime * result + mStaveListHashMap.hashCode();
     result = prime * result + mSyncChannel;
     return result;
   }
@@ -202,7 +202,7 @@ public class Measure extends NameableBase
       return false;
     if (mIsSyncOnRisingEdge != other.mIsSyncOnRisingEdge)
       return false;
-    if (!Arrays.equals(mStaveListArray, other.mStaveListArray))
+    if (!mStaveListHashMap.equals(other.mStaveListHashMap))
       return false;
     if (mSyncChannel != other.mSyncChannel)
       return false;

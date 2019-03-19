@@ -1,5 +1,6 @@
 package clearcontrol.devices.signalgen.devices.gs;
 
+import java.util.ArrayDeque;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
@@ -10,6 +11,7 @@ import clearcontrol.devices.signalgen.devices.gs.compiler.GS16AO64cCompiledScore
 import clearcontrol.devices.signalgen.devices.gs.compiler.GS16AO64cScoreCompiler;
 import clearcontrol.devices.signalgen.score.ScoreInterface;
 
+import gsao64.GSBuffer;
 import gsao64.GSSequencer;
 import gsao64.GSConstants;
 
@@ -22,7 +24,7 @@ public class GS16AO64cSignalGenerator extends SignalGeneratorBase
                                       implements  SignalGeneratorInterface
 {
     private final GSConstants constants = new GSConstants();
-    private final GS16AO64cCompiledScore mGS16AO64cCompiledScore = new GS16AO64cCompiledScore(100000);
+    private final GS16AO64cCompiledScore mGS16AO64cCompiledScore = new GS16AO64cCompiledScore(2999);
 
     private GSSequencer sequencer;
     double mWaitTimeInMilliseconds = 0;
@@ -32,7 +34,7 @@ public class GS16AO64cSignalGenerator extends SignalGeneratorBase
     {
         super("GS16AO64cSignalGenerator");
         try {
-            sequencer = new GSSequencer(65536*3, 40000);
+            sequencer = new GSSequencer(65536*3, 2999);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -65,7 +67,7 @@ public class GS16AO64cSignalGenerator extends SignalGeneratorBase
 
         GS16AO64cScoreCompiler.compile(mGS16AO64cCompiledScore, pScore);
 
-        boolean lPlayed = sequencer.play(mGS16AO64cCompiledScore.getArrayData(), 1);
+        boolean lPlayed = sequencer.play(new ArrayDeque<>(mGS16AO64cCompiledScore.getArrayData()), 1);
 
         lCurrentThread.setPriority(lCurrentThreadPriority);
         mTriggerVariable.set(false);
